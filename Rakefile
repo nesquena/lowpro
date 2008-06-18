@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby -wKU
 require 'rake'
 require 'rubygems'
 require 'zip/zip'

@@ -7,4 +7,4 @@ if (Prototype.Version.indexOf(LowPro.CompatibleWithPrototype) != 0 && window.con
                   " it may not work as expected with this version (" + Prototype.Version + ")");
 
 if (!Element.addMethods) 
-  Element.addMethods = function(o) { Object.extend(Element.Methods, o) };
+  Element.addMethods = function(o) { Object.extend(Element.Methods, o); };

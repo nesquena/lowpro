@@ -52,6 +52,6 @@ BehaviorDebugger = {
     });
     return false;
   }
-}
+};
 
 //Event.onReady(BehaviorDebugger.open.bind(BehaviorDebugger));

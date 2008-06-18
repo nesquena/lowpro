@@ -28,7 +28,7 @@ Draggable = Behavior.create({
   drag : function(e) {
     this.clientX = e.clientX;
 		this.clientY = e.clientY;
-		this.move(this.clientX - this.lastMouseX, this.clientY - this.lastMouseY)
+		this.move(this.clientX - this.lastMouseX, this.clientY - this.lastMouseY);
     this.set(e);
 		return false;
   },

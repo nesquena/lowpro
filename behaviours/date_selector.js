@@ -124,7 +124,7 @@ Calendar = Behavior.create({
           if (this._compareDate(this.selector.date, year, month, day)) classes.push('selected');
           
           html += '<td class="' + classes.join(' ') + '">' + 
-                  '<a href="#">' + day++ + '</a>' + 
+                  '<a href="#">' + (day++) + '</a>' + 
                   '</td>';
         } else html += '<td></td>';
       }
@@ -156,7 +156,7 @@ DateSelector.DEFAULTS = {
     if (!isNaN(parsed)) return new Date(parsed);
     else return null;
   }
-}
+};
 
 Object.extend(Calendar, {
   DAYS : $w('S M T W T F S'),

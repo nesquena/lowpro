@@ -14,9 +14,17 @@ Remote.Base = {
     this._bindCallbacks();
   },
   _makeRequest : function(options) {
-    if (options.update) new Ajax.Updater(options.update, options.url, options);
-    else new Ajax.Request(options.url, options);
-    return false;
+    if (options.confirm) {
+      if (confirm(options.confirm)) {
+        if (options.update) new Ajax.Updater(options.update, options.url, options);
+        else new Ajax.Request(options.url, options);
+        return false;
+      }
+    } else {
+      if (options.update) new Ajax.Updater(options.update, options.url, options);
+      else new Ajax.Request(options.url, options);
+      return false;
+    }
   },
   _bindCallbacks: function() {
     $w('onCreate onComplete onException onFailure onInteractive onLoading onLoaded onSuccess').each(function(cb) {
@@ -24,7 +32,7 @@ Remote.Base = {
         this.options[cb] = this.options[cb].bind(this);
     }.bind(this));
   }
-}
+};
 
 Remote.Link = Behavior.create(Remote.Base, {
   onclick : function() {
@@ -43,10 +51,25 @@ Remote.Form = Behavior.create(Remote.Base, {
       this._submitButton = sourceElement;
   },
   onsubmit : function() {
+    var parameters = this.element.serialize();
+
+    if (parameters.blank()) {
+      parameters = this.options.parameters;
+    } else {
+      parameters = parameters + '&' + this.options.parameters;
+    }
+    delete this.options.parameters;
+    if (this._submitButton) {
+      if (parameters.blank()) {
+        parameters = this._submitButton.name + "=" + this._submitButton.value;
+      } else {
+        parameters = parameters + '&' + this._submitButton.name + "=" + this._submitButton.value;
+      }
+    }
     var options = Object.extend({
       url : this.element.action,
       method : this.element.method || 'get',
-      parameters : this.element.serialize({ submit: this._submitButton.name })
+      parameters : parameters
     }, this.options);
     this._submitButton = null;
     return this._makeRequest(options);

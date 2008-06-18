@@ -19,7 +19,7 @@ Event.addBehavior = function(rules) {
     Ajax.Responders.register({
       onComplete : function() { 
         if (Event.addBehavior.reassignAfterAjax) 
-          setTimeout(function() { ab.reload() }, 10);
+          setTimeout(function() { ab.reload(); }, 10);
       }
     });
     ab.responderApplied = true;
@@ -36,8 +36,8 @@ Event.delegate = function(rules) {
       var element = $(e.element());
       for (var selector in rules)
         if (element.match(selector)) return rules[selector].apply(this, $A(arguments));
-    }
-}
+    };
+};
 
 Object.extend(Event.addBehavior, {
   rules : {}, cache : [],
@@ -85,7 +85,7 @@ Object.extend(Event.addBehavior, {
   _wrapObserver: function(observer) {
     return function(event) {
       if (observer.call(this, event) === false) event.stop(); 
-    }
+    };
   }
   
 });

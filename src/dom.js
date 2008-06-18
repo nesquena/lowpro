@@ -13,7 +13,7 @@ DOM.Builder = {
        } else {
          children = arguments;
        };
-       children = $A(children).flatten()
+       children = $A(children).flatten();
      }
      return DOM.Builder.create(tag, attrs, children);
     };
