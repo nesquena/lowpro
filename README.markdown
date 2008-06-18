@@ -1,10 +1,9 @@
 Low Pro - Unobtrusive Scripting Extensions to Prototype
 -------------------------------------------------------
 
-Version: 0.5  
-Author: Dan Webb  
-Project Home: [http://www.danwebb.net/lowpro/](http://www.danwebb.net/lowpro/ "danwebb.net - Low Pro Archive")  
-Subversion: [http://svn.danwebb.net/external/lowpro/](http://svn.danwebb.net/external/lowpro/ "Subversion Repo")  
+Authors: Dan Webb, Brian Landau  
+Project Home: http://github.com/brianjlandau/lowpro  
+Git: git://github.com/brianjlandau/lowpro.git  
 Licence: MIT
 
 Low Pro is a small JavaScript library built as an extension to Prototype that makes unobtrusive DOM scripting much easier.  Here's a rundown of the functionality:
