@@ -31,13 +31,25 @@ Event.addBehavior = function(rules) {
   
 };
 
+/*
 Event.delegate = function(rules) {
-  return function(e) {
-      var element = $(e.element());
+ return function(e) {
+     var element = $(e.element());
       for (var selector in rules)
         if (element.match(selector)) return rules[selector].apply(this, $A(arguments));
     };
 };
+ */
+
+Event.delegate = function(rules) {
+  return function(e) {
+      var element = $(e.element());
+      for (var selector in rules)
+        if ( $A(selector.split(',')).any(function(s) { return element.match(s); }) ) {
+          return rules[selector].apply(this, $A(arguments));
+        };
+    };
+}; 
 
 Object.extend(Event.addBehavior, {
   rules : {}, cache : [],
@@ -144,6 +156,7 @@ var Behavior = {
           this.initialize.apply(this, args);
           behavior._bindEvents(this);
           behavior.instances.push(this);
+          behavior.instance = this; // ADDED BY ME
         }
       };
 
@@ -152,6 +165,7 @@ var Behavior = {
     behavior.superclass = parent;
     behavior.subclasses = [];
     behavior.instances = [];
+    behavior.instance = null; // ADDED BY ME
 
     if (parent) {
       var subclass = function() { };
@@ -181,4 +195,3 @@ var Behavior = {
     }
   }
 };
-

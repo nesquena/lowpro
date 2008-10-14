@@ -50,4 +50,3 @@ DOM.Builder.fromHTML = function(html) {
   root.innerHTML = html;
   return root.childNodes[0];
 };
-

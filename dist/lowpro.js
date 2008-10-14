@@ -109,13 +109,25 @@ Event.addBehavior = function(rules) {
   
 };
 
+/*
 Event.delegate = function(rules) {
-  return function(e) {
-      var element = $(e.element());
+ return function(e) {
+     var element = $(e.element());
       for (var selector in rules)
         if (element.match(selector)) return rules[selector].apply(this, $A(arguments));
     };
 };
+ */
+
+Event.delegate = function(rules) {
+  return function(e) {
+      var element = $(e.element());
+      for (var selector in rules)
+        if ( $A(selector.split(',')).any(function(s) { return element.match(s); }) ) {
+          return rules[selector].apply(this, $A(arguments));
+        };
+    };
+}; 
 
 Object.extend(Event.addBehavior, {
   rules : {}, cache : [],
@@ -222,6 +234,7 @@ var Behavior = {
           this.initialize.apply(this, args);
           behavior._bindEvents(this);
           behavior.instances.push(this);
+          behavior.instance = this; // ADDED BY ME
         }
       };
 
@@ -230,6 +243,7 @@ var Behavior = {
     behavior.superclass = parent;
     behavior.subclasses = [];
     behavior.instances = [];
+    behavior.instance = null; // ADDED BY ME
 
     if (parent) {
       var subclass = function() { };
@@ -278,17 +292,10 @@ Remote.Base = {
     this._bindCallbacks();
   },
   _makeRequest : function(options) {
-    if (options.confirm) {
-      if (confirm(options.confirm)) {
-        if (options.update) new Ajax.Updater(options.update, options.url, options);
-        else new Ajax.Request(options.url, options);
-        return false;
-      }
-    } else {
-      if (options.update) new Ajax.Updater(options.update, options.url, options);
-      else new Ajax.Request(options.url, options);
-      return false;
-    }
+    if (options.confirm && !confirm(options.confirm)) { return false;  }
+    if (options.update) new Ajax.Updater(options.update, options.url, options);
+    else                new Ajax.Request(options.url, options);
+    return false;
   },
   _bindCallbacks: function() {
     $w('onCreate onComplete onException onFailure onInteractive onLoading onLoaded onSuccess').each(function(cb) {
@@ -305,35 +312,20 @@ Remote.Link = Behavior.create(Remote.Base, {
   }
 });
 
-
 Remote.Form = Behavior.create(Remote.Base, {
   onclick : function(e) {
     var sourceElement = e.element();
     
-    if (['input', 'button'].include(sourceElement.nodeName.toLowerCase()) && 
+    if (['input', 'button'].include(sourceElement.nodeName.toLowerCase()) &&
         sourceElement.type.match(/submit|image/))
       this._submitButton = sourceElement;
   },
   onsubmit : function() {
-    var parameters = this.element.serialize();
-
-    if (parameters.blank()) {
-      parameters = this.options.parameters;
-    } else {
-      parameters = parameters + '&' + this.options.parameters;
-    }
-    delete this.options.parameters;
-    if (this._submitButton) {
-      if (parameters.blank()) {
-        parameters = this._submitButton.name + "=" + this._submitButton.value;
-      } else {
-        parameters = parameters + '&' + this._submitButton.name + "=" + this._submitButton.value;
-      }
-    }
+    var additionalParameters = (this._submitButton != null) ? { submit: this._submitButton.name } : {};
     var options = Object.extend({
       url : this.element.action,
       method : this.element.method || 'get',
-      parameters : parameters
+      parameters : this.element.serialize(additionalParameters)
     }, this.options);
     this._submitButton = null;
     return this._makeRequest(options);
@@ -358,4 +350,3 @@ Observed = Behavior.create({
                                       new Form.Element.EventObserver(this.element, this.callback);
   }
 });
-
