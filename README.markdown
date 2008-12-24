@@ -17,6 +17,12 @@ Compatible with Prototype 1.6
 Tested in: Firefox 1.5 (PC/Mac), Safari 2, IE 6+, Opera 9 (PC/Mac)
 
 
+Updates
+-------------------------
+
+(byNathan Esquenazi)
+
+This is a fork of lowpro which fixes a number of issues such as Remote.Form not accepting an image submit button. In addition, fixes LowPro to remove all JSLint warnings for better compression and packing. Also, adds a 'confirm' option to remote behaviors which requires a user to confirm before an action takes place. Various other edge case fixes.
 
 Acknowledgments / Credits
 -------------------------
