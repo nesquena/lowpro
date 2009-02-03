@@ -58,24 +58,26 @@ Object.extend(Event.addBehavior, {
   
   load : function(rules) {
     for (var selector in rules) {
-      var observer = rules[selector];
+      var observers = [rules[selector]].flatten();
       var sels = selector.split(',');
       sels.each(function(sel) {
-        var parts = sel.split(/:(?=[a-z]+$)/), css = parts[0], event = parts[1];
-        $$(css).each(function(element) {
-          if (event) {
-            observer = Event.addBehavior._wrapObserver(observer);
-            $(element).observe(event, observer);
-            Event.addBehavior.cache.push([element, event, observer]);
-          } else {
-            if (!element.$$assigned || !element.$$assigned.include(observer)) {
-              if (observer.attach) observer.attach(element);
+        observers.each(function(observer) {
+          var parts = sel.split(/:(?=[a-z]+$)/), css = parts[0], event = parts[1];
+          $$(css).each(function(element) {
+            if (event) {
+              observer = Event.addBehavior._wrapObserver(observer);
+              $(element).observe(event, observer);
+              Event.addBehavior.cache.push([element, event, observer]);
+            } else {
+              if (!element.$$assigned || !element.$$assigned.include(observer)) {
+                if (observer.attach) observer.attach(element);
               
-              else observer.call($(element));
-              element.$$assigned = element.$$assigned || [];
-              element.$$assigned.push(observer);
+                else observer.call($(element));
+                element.$$assigned = element.$$assigned || [];
+                element.$$assigned.push(observer);
+              }
             }
-          }
+          });
         });
       });
     }
