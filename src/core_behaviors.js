@@ -1,7 +1,10 @@
 Remote = Behavior.create({
   initialize: function(options) {
-    if (this.element.nodeName == 'FORM') new Remote.Form(this.element, options);
-    else new Remote.Link(this.element, options);
+    if (this.element.nodeName == 'FORM'){ 
+      return new Remote.Form(this.element, options);
+    } else { 
+      return new Remote.Link(this.element, options);
+    }
   }
 });
 
@@ -15,14 +18,18 @@ Remote.Base = {
   },
   _makeRequest : function(options) {
     if (options.confirm && !confirm(options.confirm)) { return false;  }
-    if (options.update) new Ajax.Updater(options.update, options.url, options);
-    else                new Ajax.Request(options.url, options);
+    if (options.update) { 
+      var updater = new Ajax.Updater(options.update, options.url, options);
+    } else {
+      var request = new Ajax.Request(options.url, options);
+    }
     return false;
   },
   _bindCallbacks: function() {
     $w('onCreate onComplete onException onFailure onInteractive onLoading onLoaded onSuccess').each(function(cb) {
-      if (Object.isFunction(this.options[cb]))
+      if (Object.isFunction(this.options[cb])) {
         this.options[cb] = this.options[cb].bind(this);
+      }
     }.bind(this));
   }
 };
@@ -37,13 +44,12 @@ Remote.Link = Behavior.create(Remote.Base, {
 Remote.Form = Behavior.create(Remote.Base, {
   onclick : function(e) {
     var sourceElement = e.element();
-    
-    if (['input', 'button'].include(sourceElement.nodeName.toLowerCase()) &&
-        sourceElement.type.match(/submit|image/))
+    if (['input', 'button'].include(sourceElement.nodeName.toLowerCase()) && sourceElement.type.match(/submit|image/)) {
       this._submitButton = sourceElement;
+    }
   },
   onsubmit : function() {
-    var additionalParameters = (this._submitButton != null) ? { submit: this._submitButton.name } : {};
+    var additionalParameters = (this._submitButton !== null) ? { submit: this._submitButton.name } : {};
     var options = Object.extend({
       url : this.element.action,
       method : this.element.method || 'get',
