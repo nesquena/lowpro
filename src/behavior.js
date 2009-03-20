@@ -18,8 +18,9 @@ Event.addBehavior = function(rules) {
   if (!ab.responderApplied) {
     Ajax.Responders.register({
       onComplete : function() { 
-        if (Event.addBehavior.reassignAfterAjax) 
+        if (Event.addBehavior.reassignAfterAjax) {
           setTimeout(function() { ab.reload(); }, 10);
+			}
       }
     });
     ab.responderApplied = true;
@@ -31,23 +32,14 @@ Event.addBehavior = function(rules) {
   
 };
 
-/*
-Event.delegate = function(rules) {
- return function(e) {
-     var element = $(e.element());
-      for (var selector in rules)
-        if (element.match(selector)) return rules[selector].apply(this, $A(arguments));
-    };
-};
- */
-
 Event.delegate = function(rules) {
   return function(e) {
       var element = $(e.element());
-      for (var selector in rules)
+      for (var selector in rules) {
         if ( $A(selector.split(',')).any(function(s) { return element.match(s); }) ) {
           return rules[selector].apply(this, $A(arguments));
-        };
+        }
+      }
     };
 }; 
 
@@ -58,28 +50,32 @@ Object.extend(Event.addBehavior, {
   
   load : function(rules) {
     for (var selector in rules) {
-      var observers = [rules[selector]].flatten();
-      var sels = selector.split(',');
-      sels.each(function(sel) {
-        observers.each(function(observer) {
-          var parts = sel.split(/:(?=[a-z]+$)/), css = parts[0], event = parts[1];
-          $$(css).each(function(element) {
-            if (event) {
-              observer = Event.addBehavior._wrapObserver(observer);
-              $(element).observe(event, observer);
-              Event.addBehavior.cache.push([element, event, observer]);
-            } else {
-              if (!element.$$assigned || !element.$$assigned.include(observer)) {
-                if (observer.attach) observer.attach(element);
-              
-                else observer.call($(element));
-                element.$$assigned = element.$$assigned || [];
-                element.$$assigned.push(observer);
+      if ( selector ){
+        var observers = [rules[selector]].flatten();
+        var sels = selector.split(',');
+        sels.each(function(sel) {
+          observers.each(function(observer) {
+            var parts = sel.split(/:(?=[a-z]+$)/), css = parts[0], event = parts[1];
+            $$(css).each(function(element) {
+              if (event) {
+                observer = Event.addBehavior._wrapObserver(observer);
+                $(element).observe(event, observer);
+                Event.addBehavior.cache.push([element, event, observer]);
+              } else {
+                if (!element.$$assigned || !element.$$assigned.include(observer)) {
+                  if (observer.attach) {
+                    observer.attach(element);
+                  } else {
+                    observer.call($(element));
+                  }
+                  element.$$assigned = element.$$assigned || [];
+                  element.$$assigned.push(observer);
+                }
               }
-            }
+            });
           });
         });
-      });
+      }
     }
   },
   
@@ -98,7 +94,9 @@ Object.extend(Event.addBehavior, {
   
   _wrapObserver: function(observer) {
     return function(event) {
-      if (observer.call(this, event) === false) event.stop(); 
+      if (observer.call(this, event) === false) {
+        event.stop();
+      }
     };
   }
   
@@ -138,27 +136,26 @@ $$$ = Event.addBehavior.bind(Event);
 var Behavior = {
   create: function() {
     var parent = null, properties = $A(arguments);
-    if (Object.isFunction(properties[0]))
+    if (Object.isFunction(properties[0])) {
       parent = properties.shift();
-
+    }
       var behavior = function() { 
         var behavior = arguments.callee;
+        var args = null;
         if (!this.initialize) {
-          var args = $A(arguments);
+          args = $A(arguments);
 
           return function() {
             var initArgs = [this].concat(args);
             behavior.attach.apply(behavior, initArgs);
           };
         } else {
-          var args = (arguments.length == 2 && arguments[1] instanceof Array) ? 
-                      arguments[1] : Array.prototype.slice.call(arguments, 1);
-
+          args = (arguments.length == 2 && arguments[1] instanceof Array) ? arguments[1] : Array.prototype.slice.call(arguments, 1);
           this.element = $(arguments[0]);
           this.initialize.apply(this, args);
           behavior._bindEvents(this);
           behavior.instances.push(this);
-          behavior.instance = this; // ADDED BY ME
+          behavior.instance = this;
         }
       };
 
@@ -167,21 +164,21 @@ var Behavior = {
     behavior.superclass = parent;
     behavior.subclasses = [];
     behavior.instances = [];
-    behavior.instance = null; // ADDED BY ME
+    behavior.instance = null;
 
     if (parent) {
       var subclass = function() { };
       subclass.prototype = parent.prototype;
-      behavior.prototype = new subclass;
+      behavior.prototype = new subclass();
       parent.subclasses.push(behavior);
     }
 
-    for (var i = 0; i < properties.length; i++)
+    for (var i = 0; i < properties.length; i++){
       behavior.addMethods(properties[i]);
-
-    if (!behavior.prototype.initialize)
+    }
+    if (!behavior.prototype.initialize){
       behavior.prototype.initialize = Prototype.emptyFunction;
-
+    }
     behavior.prototype.constructor = behavior;
 
     return behavior;
@@ -191,9 +188,11 @@ var Behavior = {
       return new this(element, Array.prototype.slice.call(arguments, 1));
     },
     _bindEvents : function(bound) {
-      for (var member in bound)
-        if (member.match(/^on(.+)/) && typeof bound[member] == 'function')
+      for (var member in bound) {
+        if (member.match(/^on(.+)/) && typeof bound[member] == 'function') {
           bound.element.observe(RegExp.$1, Event.addBehavior._wrapObserver(bound[member].bindAsEventListener(bound)));
+        }
+      }
     }
   }
 };
