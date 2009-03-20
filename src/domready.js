@@ -5,7 +5,10 @@
 // Event.onReady(callbackFunction);
 Object.extend(Event, {
   onReady : function(f) {
-    if (document.body) f();
-    else document.observe('dom:loaded', f);
+    if (document.body) { 
+      f();
+    } else {
+      document.observe('dom:loaded', f);
+    }
   }
 });
