@@ -12,7 +12,7 @@ DOM.Builder = {
          children = Array.prototype.slice.call(arguments, 1);
        } else {
          children = arguments;
-       };
+       }
        children = $A(children).flatten();
      }
      return DOM.Builder.create(tag, attrs, children);
@@ -23,8 +23,9 @@ DOM.Builder = {
 		var el = new Element(tag, attrs);
 	  
 		for (var i=0; i<children.length; i++) {
-			if (typeof children[i] == 'string') 
+			if (typeof children[i] == 'string') {
 			  children[i] = document.createTextNode(children[i]);
+			}
 			el.appendChild(children[i]);
 		}
 		return $(el);
@@ -38,15 +39,17 @@ DOM.Builder = {
 				     "select|option|blockquote|cite|br|hr|dd|dl|dt|address|a|button|abbr|acronym|" +
 				     "script|link|style|bdo|ins|del|object|param|col|colgroup|optgroup|caption|" + 
 				     "label|dfn|kbd|samp|var").split("|");
-  var el, i=0;
-	while (el = els[i++]) 
+	for( var i = 0, l = els.length; i < l; i++ ) {
+	  el = els[i];
 	  window['$' + el] = DOM.Builder.tagFunc(el);
+	}
 })();
 
 DOM.Builder.fromHTML = function(html) {
   var root;
-  if (!(root = arguments.callee._root))
+  if (!(root = arguments.callee._root)){
     root = arguments.callee._root = document.createElement('div');
+  }
   root.innerHTML = html;
   return root.childNodes[0];
 };
