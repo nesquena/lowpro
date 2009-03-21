@@ -19,7 +19,10 @@ DOM.Builder = {
     };
   },
 	create : function(tag, attrs, children) {
-		attrs = attrs || {}; children = children || []; tag = tag.toLowerCase();
+		tag = tag.toLowerCase();
+		attrs = attrs || {}; 
+		children = children || []; 
+		
 		var el = new Element(tag, attrs);
 	  
 		for (var i=0; i<children.length; i++) {

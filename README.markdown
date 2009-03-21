@@ -24,6 +24,9 @@ Updates
 
 This is a fork of lowpro which fixes a number of issues such as Remote.Form not accepting an image submit button. In addition, fixes LowPro to remove all JSLint warnings for better compression and packing. Also, adds a 'confirm' option to remote behaviors which requires a user to confirm before an action takes place. Various other edge case fixes.
 
+(by Morgan Roderick)
+Further fixing of JSLint issues. Various smaller fixes.
+
 Acknowledgments / Credits
 -------------------------
 
