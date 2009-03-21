@@ -5,28 +5,25 @@ BehaviorDebugger = {
   TABLE_STYLES : "width: 100%; margin: 5px 0;",
   HIGHLIGHT_BORDER : "1px solid red",
   open : function() {
-    if (!this.debuggerPane) 
+    if (!this.debuggerPane) {
       this._createDebugger();
-      
+    }
     this.debuggerPane.show();
   },
   close : function() {
     this.debuggerPane.hide();
   },
   toggle : function() {
-    !this.debuggerPane || this.debuggerPane.style.display == 'none' ? this.open() : this.close();
+    if ( !this.debuggerPane || this.debuggerPane.style.display == 'none' ){
+      this.open();
+    } else {
+      this.close();
+    }
   },
   _createDebugger : function() {
-    this.debuggerPane = $div({id : 'debugger', style : this.STYLES},
-      $h2({ style: this.HEAD_STYLES }, 'Low Pro Behavior Debugger')
-    );
+    this.debuggerPane = $div({id : 'debugger', style : this.STYLES}, $h2({ style: this.HEAD_STYLES }, 'Low Pro Behavior Debugger'));
     
-    this.behaviorTable = $table({ style: this.TABLE_STYLES },
-      $thead(
-        $tr( $th('selector'), $th('behavior') )
-      ),
-      $tbody()
-    );
+    this.behaviorTable = $table({ style: this.TABLE_STYLES },$thead($tr( $th('selector'), $th('behavior') ) ),$tbody());
     
     this.debuggerPane.appendChild(this.behaviorTable);
     document.body.appendChild(this.debuggerPane);
@@ -35,12 +32,9 @@ BehaviorDebugger = {
   _updateTable : function() {
     var body = this.behaviorTable.tBodies[0], rules = Event.addBehavior.rules;
     for (var rule in rules) {
-      body.appendChild(
-        $tr(
-          $td($a({ href : '#', onclick : 'return BehaviorDebugger._showApplied(this)' }, rule)), 
-          $td(this._behaviorString(rules[rule]))
-        )
-      );
+      if( rule !== null){
+        body.appendChild($tr( $td($a({ href : '#', onclick : 'return BehaviorDebugger._showApplied(this)' }, rule)), $td(this._behaviorString(rules[rule]))));  
+      }
     }
   },
   _behaviorString : function(func) {
