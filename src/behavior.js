@@ -51,7 +51,7 @@ Event.delegate = function(rules) {
 }; 
 
 Object.extend(Event.addBehavior, {
-  rules : {}, 
+  rules : {},
   cache : [],
   reassignAfterAjax : false,
   autoTrigger : true,
