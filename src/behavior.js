@@ -20,7 +20,7 @@ Event.addBehavior = function(rules) {
       onComplete : function() { 
         if (Event.addBehavior.reassignAfterAjax) {
           setTimeout(function() { ab.reload(); }, 10);
-			}
+        }
       }
     });
     ab.responderApplied = true;
@@ -34,17 +34,25 @@ Event.addBehavior = function(rules) {
 
 Event.delegate = function(rules) {
   return function(e) {
-      var element = $(e.element());
-      for (var selector in rules) {
-        if ( $A(selector.split(',')).any(function(s) { return element.match(s); }) ) {
+    var element = e.element();
+    for (var selector in rules) {
+      if ( selector !== null ){
+        var parts = $A(selector.split(','));
+        var match_found = false;
+        while( !match_found && i < parts.length ){
+          match_found = element.match(parts[i++]);
+        }
+        if ( match_found ){
           return rules[selector].apply(this, $A(arguments));
         }
       }
-    };
+    }
+  };
 }; 
 
 Object.extend(Event.addBehavior, {
-  rules : {}, cache : [],
+  rules : {},
+  cache : [],
   reassignAfterAjax : false,
   autoTrigger : true,
   
@@ -53,7 +61,7 @@ Object.extend(Event.addBehavior, {
       if ( selector ){
         var observers = [rules[selector]].flatten();
         var sels = selector.split(',');
-        sels.each(function(sel) {
+        sels.each( function(sel) {
           observers.each(function(observer) {
             var parts = sel.split(/:(?=[a-z]+$)/), css = parts[0], event = parts[1];
             $$(css).each(function(element) {
@@ -72,9 +80,9 @@ Object.extend(Event.addBehavior, {
                   element.$$assigned.push(observer);
                 }
               }
-            });
-          });
-        });
+            }());
+          }());
+        }());
       }
     }
   },
