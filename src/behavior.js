@@ -80,9 +80,9 @@ Object.extend(Event.addBehavior, {
                   element.$$assigned.push(observer);
                 }
               }
-            }());
-          }());
-        }());
+            });
+          });
+        });
       }
     }
   },
