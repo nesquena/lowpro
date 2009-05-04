@@ -26,6 +26,7 @@ This is a fork of lowpro which fixes a number of issues such as Remote.Form not 
 
 (by Morgan Roderick)
 Further fixing of JSLint issues. Various smaller fixes.
+Added dependency on Juicer (http://github.com/cjohansen/juicer) to build minified version
 
 Acknowledgments / Credits
 -------------------------

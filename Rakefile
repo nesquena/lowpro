@@ -3,6 +3,7 @@ require 'rake'
 require 'rubygems'
 require 'zip/zip'
 require 'fileutils'
+require 'juicer'
 
 ROOT = File.dirname(__FILE__)
 SRC = ROOT + '/src'
@@ -25,7 +26,7 @@ LP_VERSION = get_version_string
 
 SOURCE_LIST = file_list SRC, 'lowpro.js', 'dom.js', 'domready.js', 'behavior.js', 'core_behaviors.js'
 
-DIST_LIST = file_list DIST, 'lowpro.js', 'README', 'LICENSE'
+DIST_LIST = file_list DIST, 'lowpro.js', 'lowpro.min.js', 'README', 'LICENSE'
 
 task :default => :dist
 
@@ -59,6 +60,9 @@ task :build => :clean do
       end
     end
   end
+  
+  # Morgan Roderick - FIXME: figure out how to be rid of the closure warnings, so we can be rid of the --ignore-warnings argument
+  sh "juicer merge #{DIST}/lowpro.js --ignore-problems"
 end
 
 desc 'Copies a built version of LowPro to test dir.'
