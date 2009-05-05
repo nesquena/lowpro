@@ -39,6 +39,7 @@ Event.delegate = function(rules) {
       if ( selector !== null ){
         var parts = $A(selector.split(','));
         var match_found = false;
+        var i = 0;
         while( !match_found && i < parts.length ){
           match_found = element.match(parts[i++]);
         }
