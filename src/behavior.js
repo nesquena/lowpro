@@ -39,6 +39,7 @@ Event.delegate = function(rules) {
       if ( selector !== null ){
         var parts = $A(selector.split(','));
         var match_found = false;
+        var i = 0;
         while( !match_found && i < parts.length ){
           match_found = element.match(parts[i++]);
         }
@@ -66,9 +67,9 @@ Object.extend(Event.addBehavior, {
             var parts = sel.split(/:(?=[a-z]+$)/), css = parts[0], event = parts[1];
             $$(css).each(function(element) {
               if (event) {
-                observer = Event.addBehavior._wrapObserver(observer);
-                $(element).observe(event, observer);
-                Event.addBehavior.cache.push([element, event, observer]);
+                var wrappedObserver = Event.addBehavior._wrapObserver(observer);
+                $(element).observe(event, wrappedObserver);
+                Event.addBehavior.cache.push([element, event, wrappedObserver]);                
               } else {
                 if (!element.$$assigned || !element.$$assigned.include(observer)) {
                   if (observer.attach) {

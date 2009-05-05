@@ -1,3 +1,4 @@
+/* jslint immed:false */
 LowPro = {};
 LowPro.Version = '0.5';
 LowPro.CompatibleWithPrototype = '1.6';
@@ -32,7 +33,10 @@ DOM.Builder = {
     };
   },
 	create : function(tag, attrs, children) {
-		attrs = attrs || {}; children = children || []; tag = tag.toLowerCase();
+		tag = tag.toLowerCase();
+		attrs = attrs || {}; 
+		children = children || []; 
+		
 		var el = new Element(tag, attrs);
 	  
 		for (var i=0; i<children.length; i++) {
@@ -123,6 +127,7 @@ Event.delegate = function(rules) {
       if ( selector !== null ){
         var parts = $A(selector.split(','));
         var match_found = false;
+        var i = 0;
         while( !match_found && i < parts.length ){
           match_found = element.match(parts[i++]);
         }
@@ -135,7 +140,7 @@ Event.delegate = function(rules) {
 }; 
 
 Object.extend(Event.addBehavior, {
-  rules : {}, 
+  rules : {},
   cache : [],
   reassignAfterAjax : false,
   autoTrigger : true,
@@ -150,9 +155,9 @@ Object.extend(Event.addBehavior, {
             var parts = sel.split(/:(?=[a-z]+$)/), css = parts[0], event = parts[1];
             $$(css).each(function(element) {
               if (event) {
-                observer = Event.addBehavior._wrapObserver(observer);
-                $(element).observe(event, observer);
-                Event.addBehavior.cache.push([element, event, observer]);
+                var wrappedObserver = Event.addBehavior._wrapObserver(observer);
+                $(element).observe(event, wrappedObserver);
+                Event.addBehavior.cache.push([element, event, wrappedObserver]);                
               } else {
                 if (!element.$$assigned || !element.$$assigned.include(observer)) {
                   if (observer.attach) {
@@ -164,9 +169,9 @@ Object.extend(Event.addBehavior, {
                   element.$$assigned.push(observer);
                 }
               }
-            }());
-          }());
-        }());
+            });
+          });
+        });
       }
     }
   },
