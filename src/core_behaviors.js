@@ -49,7 +49,7 @@ Remote.Form = Behavior.create(Remote.Base, {
     }
   },
   onsubmit : function() {
-    var additionalParameters = (this._submitButton !== null) ? { submit: this._submitButton.name } : {};
+    var additionalParameters = (this._submitButton) ? { submit: this._submitButton.name } : {};
     var options = Object.extend({
       url : this.element.action,
       method : this.element.method || 'get',
