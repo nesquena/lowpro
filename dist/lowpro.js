@@ -122,22 +122,14 @@ Event.addBehavior = function(rules) {
 
 Event.delegate = function(rules) {
   return function(e) {
-    var element = e.element();
-    for (var selector in rules) {
-      if ( selector !== null ){
-        var parts = $A(selector.split(','));
-        var match_found = false;
-        var i = 0;
-        while( !match_found && i < parts.length ){
-          match_found = element.match(parts[i++]);
-        }
-        if ( match_found ){
-          return rules[selector].apply(this, $A(arguments));
-        }
-      }
-    }
-  };
-}; 
+		var element = $(e.element());
+		for ( var selector in rules ){
+			if ( element.match && element.match( selector ) ) {
+				return rules[selector].apply(this, $A(arguments));
+			}
+		}        
+	};
+};
 
 Object.extend(Event.addBehavior, {
   rules : {},
@@ -339,7 +331,8 @@ Remote.Link = Behavior.create(Remote.Base, {
 Remote.Form = Behavior.create(Remote.Base, {
   onclick : function(e) {
     var sourceElement = e.element();
-    if (['input', 'button'].include(sourceElement.nodeName.toLowerCase()) && sourceElement.type.match(/submit|image/)) {
+    if (['input', 'button'].include(sourceElement.nodeName.toLowerCase()) && 
+        sourceElement.type.match(/submit|image/)) {
       this._submitButton = sourceElement;
     }
   },

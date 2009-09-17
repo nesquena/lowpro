@@ -122,22 +122,14 @@ Event.addBehavior = function(rules) {
 
 Event.delegate = function(rules) {
   return function(e) {
-    var element = e.element();
-    for (var selector in rules) {
-      if ( selector !== null ){
-        var parts = $A(selector.split(','));
-        var match_found = false;
-        var i = 0;
-        while( !match_found && i < parts.length ){
-          match_found = element.match(parts[i++]);
-        }
-        if ( match_found ){
-          return rules[selector].apply(this, $A(arguments));
-        }
-      }
-    }
-  };
-}; 
+		var element = $(e.element());
+		for ( var selector in rules ){
+			if ( element.match && element.match( selector ) ) {
+				return rules[selector].apply(this, $A(arguments));
+			}
+		}        
+	};
+};
 
 Object.extend(Event.addBehavior, {
   rules : {},
@@ -147,30 +139,24 @@ Object.extend(Event.addBehavior, {
   
   load : function(rules) {
     for (var selector in rules) {
-      if ( selector ){
-        var observers = [rules[selector]].flatten();
-        var sels = selector.split(',');
-        sels.each( function(sel) {
-          observers.each(function(observer) {
-            var parts = sel.split(/:(?=[a-z]+$)/), css = parts[0], event = parts[1];
-            $$(css).each(function(element) {
-              if (event) {
-                var wrappedObserver = Event.addBehavior._wrapObserver(observer);
-                $(element).observe(event, wrappedObserver);
-                Event.addBehavior.cache.push([element, event, wrappedObserver]);                
-              } else {
-                if (!element.$$assigned || !element.$$assigned.include(observer)) {
-                  if (observer.attach) {
-                    observer.attach(element);
-                  } else {
-                    observer.call($(element));
-                  }
-                  element.$$assigned = element.$$assigned || [];
-                  element.$$assigned.push(observer);
-                }
-              }
-            });
-          });
+      var observer = rules[selector];
+      var sels = selector.split(',');
+      sels.each(function(sel) {
+        var parts = sel.split(/:(?=[a-z]+$)/), css = parts[0], event = parts[1];
+        $$(css).each(function(element) {
+          if (event) {
+            var wrappedObserver = Event.addBehavior._wrapObserver(observer);
+            $(element).observe(event, wrappedObserver);
+            Event.addBehavior.cache.push([element, event, wrappedObserver]);
+          } else {
+            if (!element.$$assigned || !element.$$assigned.include(observer)) {
+              if (observer.attach) observer.attach(element);
+              
+              else observer.call($(element));
+              element.$$assigned = element.$$assigned || [];
+              element.$$assigned.push(observer);
+            }
+          }
         });
       }
     }
@@ -285,9 +271,9 @@ var Behavior = {
     },
     _bindEvents : function(bound) {
       for (var member in bound) {
-        if (member.match(/^on(.+)/) && typeof bound[member] == 'function') {
-          bound.element.observe(RegExp.$1, Event.addBehavior._wrapObserver(bound[member].bindAsEventListener(bound)));
-        }
+        var matches = member.match(/^on(.+)/);
+        if (matches && typeof bound[member] == 'function')
+          bound.element.observe(matches[1], Event.addBehavior._wrapObserver(bound[member].bindAsEventListener(bound)));
       }
     }
   }
