@@ -122,6 +122,7 @@ Event.addBehavior = function(rules) {
 
 Event.delegate = function(rules) {
   return function(e) {
+<<<<<<< HEAD
     var element = e.element();
     for (var selector in rules) {
       if ( selector !== null ){
@@ -138,6 +139,15 @@ Event.delegate = function(rules) {
     }
   };
 }; 
+=======
+		for ( var selector in rules ){
+			if ( e.findElement(selector) ) {
+				return rules[selector].apply(this, $A(arguments));
+			}
+		}        
+	}
+}
+>>>>>>> 82e9b4a739dc2e937256aad4e8a2b9b90650aa8e
 
 Object.extend(Event.addBehavior, {
   rules : {},
