@@ -122,32 +122,15 @@ Event.addBehavior = function(rules) {
 
 Event.delegate = function(rules) {
   return function(e) {
-<<<<<<< HEAD
-    var element = e.element();
     for (var selector in rules) {
-      if ( selector !== null ){
+      if ( selector !== null ) {
         var parts = $A(selector.split(','));
-        var match_found = false;
-        var i = 0;
-        while( !match_found && i < parts.length ){
-          match_found = element.match(parts[i++]);
-        }
-        if ( match_found ){
-          return rules[selector].apply(this, $A(arguments));
-        }
+        var match_found = parts.any(function(part) { return e.findElement(part) != null; });
+        if ( match_found ){ return rules[selector].apply(this, $A(arguments)); }
       }
     }
   };
-}; 
-=======
-		for ( var selector in rules ){
-			if ( e.findElement(selector) ) {
-				return rules[selector].apply(this, $A(arguments));
-			}
-		}        
-	}
-}
->>>>>>> 82e9b4a739dc2e937256aad4e8a2b9b90650aa8e
+};
 
 Object.extend(Event.addBehavior, {
   rules : {},
@@ -350,7 +333,7 @@ Remote.Form = Behavior.create(Remote.Base, {
   onclick : function(e) {
     var sourceElement = e.element();
     if (['input', 'button'].include(sourceElement.nodeName.toLowerCase()) && 
-        sourceElement.type.match(/submit|image/)) {
+        ['submit', 'image'].include(sourceElement.type))
       this._submitButton = sourceElement;
     }
   },
