@@ -62,7 +62,7 @@ task :build => :clean do
   end
   
   # Morgan Roderick - FIXME: figure out how to be rid of the closure warnings, so we can be rid of the --ignore-warnings argument
-  sh "juicer merge #{DIST}/lowpro.js --ignore-problems"
+  # sh "juicer merge #{DIST}/lowpro.js --ignore-problems"
 end
 
 desc 'Copies a built version of LowPro to test dir.'
