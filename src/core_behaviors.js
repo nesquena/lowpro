@@ -11,7 +11,7 @@ Remote = Behavior.create({
 Remote.Base = {
   initialize : function(options) {
     this.options = Object.extend({
-      evaluateScripts : true
+      evalScripts : true
     }, options || {});
     
     this._bindCallbacks();
